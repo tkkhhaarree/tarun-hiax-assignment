@@ -8,6 +8,9 @@ function ExcelUpload() {
    const [csvArray, setCsvArray] = useState([]);
    const [headers, setHeaders] = useState([]);
    const [loader, setLoader] = useState(false);
+   const [filterVal, setFilterVal] = useState("");
+   const [origArr, setOrigArr] = useState();
+   const [inHide, setInhide] = useState("hidden");
 
    const submit = () => {
       const file = csvFile;
@@ -45,8 +48,11 @@ function ExcelUpload() {
          return eachObject;
       });
 
+      console.log(newArray);
+
       setHeaders(headerconfig);
       setCsvArray(newArray);
+      setOrigArr(newArray);
    };
 
    const headerConfig = headers.map((header, i) => {
@@ -96,8 +102,9 @@ function ExcelUpload() {
                      setTimeout(() => {
                         setLoader(false);
                         setCsvArray([]);
+                        setInhide("block");
                         if (csvFile) submit();
-                     }, 3000);
+                     }, 4000);
                   }}
                >
                   Submit
@@ -122,7 +129,26 @@ function ExcelUpload() {
                   visible={loader}
                />
             </div>
-
+            <input
+               type={inHide}
+               value={filterVal}
+               onChange={(e) => {
+                  setFilterVal(e.target.value);
+                  setCsvArray(
+                     origArr.filter((obj) => {
+                        if (
+                           JSON.stringify(obj)
+                              .toLowerCase()
+                              .includes(e.target.value)
+                        ) {
+                           return true;
+                        } else {
+                           return false;
+                        }
+                     })
+                  );
+               }}
+            ></input>
             {csvArray.length > 0 && (
                <div style={{ display: "flex", justifyContent: "center" }}>
                   <SortableTable
