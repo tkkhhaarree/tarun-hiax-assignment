@@ -70,11 +70,11 @@ const TableItems = styled.div`
    }
 
    &::-webkit-scrollbar-thumb {
-      background-color: #52514e;
+      background-color: #b791db;
       border-radius: 3px;
 
       &:hover {
-         background: #7a7976;
+         background: #c4b2d6;
       }
    }
 `;

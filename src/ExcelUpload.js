@@ -1,11 +1,13 @@
 import { useState } from "react";
 import styled from "styled-components";
 import SortableTable from "./SortableTable";
+import { Audio } from "react-loader-spinner";
 
 function ExcelUpload() {
    const [csvFile, setCsvFile] = useState();
    const [csvArray, setCsvArray] = useState([]);
    const [headers, setHeaders] = useState([]);
+   const [loader, setLoader] = useState(false);
 
    const submit = () => {
       const file = csvFile;
@@ -56,53 +58,81 @@ function ExcelUpload() {
    });
 
    return (
-      <Container>
-         <Form id="csv-form">
-            <MyInput
-               type="file"
-               accept=".csv"
-               id="csvFile"
-               style={{
-                  border: "none",
-                  height: "100px",
-                  background: "#535454",
-                  paddingTop: "10px",
-                  paddingLeft: "5px",
-                  borderRadius: "5px",
-                  color: "#fff",
-                  cursor: "pointer",
-                  transition: "background .2s ease-in-out",
-               }}
-               onChange={(e) => {
-                  setCsvFile(e.target.files[0]);
-               }}
-            ></MyInput>
+      <>
+         <Container>
+            <Form id="csv-form">
+               <MyInput
+                  type="file"
+                  accept=".csv"
+                  id="csvFile"
+                  style={{
+                     border: "none",
+                     height: "100px",
+                     background: "#535454",
+                     paddingTop: "10px",
+                     paddingLeft: "5px",
+                     borderRadius: "5px",
+                     color: "#fff",
+                     cursor: "pointer",
+                     transition: "background .2s ease-in-out",
+                  }}
+                  onChange={(e) => {
+                     setCsvFile(e.target.files[0]);
+                  }}
+               ></MyInput>
 
-            <button
+               <button
+                  style={{
+                     marginTop: "10px",
+                     padding: "5px",
+                     color: "white",
+                     background: "#42f575",
+                     borderRadius: "5px",
+                     border: "1px solid #618c6d",
+                  }}
+                  onClick={(e) => {
+                     e.preventDefault();
+                     setLoader(true);
+                     setTimeout(() => {
+                        setLoader(false);
+                        setCsvArray([]);
+                        if (csvFile) submit();
+                     }, 3000);
+                  }}
+               >
+                  Submit
+               </button>
+            </Form>
+
+            <div
                style={{
-                  marginTop: "10px",
-                  padding: "5px",
-                  color: "white",
-                  background: "#42f575",
-                  borderRadius: "5px",
-                  border: "1px solid #618c6d",
-               }}
-               onClick={(e) => {
-                  e.preventDefault();
-                  setCsvArray([]);
-                  if (csvFile) submit();
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
                }}
             >
-               Submit
-            </button>
-         </Form>
-
-         {csvArray.length > 0 && (
-            <div style={{ display: "flex", justifyContent: "center" }}>
-               <SortableTable csvArray={csvArray} headerConfig={headerConfig} />
+               <Audio
+                  height="80"
+                  width="80"
+                  radius="9"
+                  color="green"
+                  ariaLabel="three-dots-loading"
+                  wrapperStyle
+                  wrapperClass
+                  visible={loader}
+               />
             </div>
-         )}
-      </Container>
+
+            {csvArray.length > 0 && (
+               <div style={{ display: "flex", justifyContent: "center" }}>
+                  <SortableTable
+                     csvArray={csvArray}
+                     headerConfig={headerConfig}
+                  />
+               </div>
+            )}
+         </Container>
+      </>
    );
 }
 
